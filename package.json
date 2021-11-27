@@ -1,9 +1,10 @@
 {
   "name": "gizmos-answer-server",
-  "author": "Vidhan Bhatt",
-  "license": "MIT",
   "version": "0.0.1",
   "main": "dist/app.js",
+  "repository": "https://github.com/vidhanio/gizmos-answer-server",
+  "author": "Vidhan Bhatt",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",

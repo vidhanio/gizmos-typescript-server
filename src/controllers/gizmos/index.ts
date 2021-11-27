@@ -7,7 +7,7 @@ const getGizmos = async (req: Request, res: Response): Promise<void> => {
     const gizmos = await Gizmo.find();
     res.status(200).json({ gizmos });
   } catch (error) {
-    throw error;
+    res.sendStatus(404);
   }
 };
 
@@ -18,7 +18,7 @@ const getGizmo = async (req: Request, res: Response): Promise<void> => {
     });
     res.status(200).json({ gizmo });
   } catch (error) {
-    throw error;
+    res.sendStatus(404);
   }
 };
 
@@ -41,7 +41,7 @@ const addGizmo = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({ message: "Gizmo added", gizmo: addedGizmo });
   } catch (error) {
-    throw error;
+    res.sendStatus(404);
   }
 };
 
@@ -63,7 +63,7 @@ const updateGizmo = async (req: Request, res: Response): Promise<void> => {
       gizmo: updatedGizmo,
     });
   } catch (error) {
-    throw error;
+    res.sendStatus(404);
   }
 };
 
@@ -77,7 +77,7 @@ const deleteGizmo = async (req: Request, res: Response): Promise<void> => {
       gizmo: deletedGizmo,
     });
   } catch (error) {
-    throw error;
+    res.sendStatus(404);
   }
 };
 

@@ -1,14 +1,14 @@
 {
   "name": "gizmos-answer-server",
+  "author": "Vidhan Bhatt",
+  "license": "MIT",
   "version": "0.0.1",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts"
   },
-  "author": "Vidhan Bhatt",
-  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",

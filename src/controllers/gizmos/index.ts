@@ -4,7 +4,7 @@ import Gizmo from "../../models/gizmo";
 
 const getGizmos = async (req: Request, res: Response): Promise<void> => {
   try {
-    const gizmos: IGizmo[] = await Gizmo.find();
+    const gizmos = await Gizmo.find();
     res.status(200).json({ gizmos });
   } catch (error) {
     throw error;
@@ -13,8 +13,8 @@ const getGizmos = async (req: Request, res: Response): Promise<void> => {
 
 const getGizmo = async (req: Request, res: Response): Promise<void> => {
   try {
-    const gizmo: IGizmo | null = await Gizmo.findOne({
-      resource: parseInt(req.params.resource),
+    const gizmo = await Gizmo.findOne({
+      resource: Number(req.params.resource),
     });
     res.status(200).json({ gizmo });
   } catch (error) {
@@ -29,7 +29,7 @@ const addGizmo = async (req: Request, res: Response): Promise<void> => {
       "title" | "materials" | "description" | "resource" | "answers"
     >;
 
-    const gizmo: IGizmo = new Gizmo({
+    const gizmo = new Gizmo({
       name: body.title,
       materials: body.materials,
       description: body.description,
@@ -37,7 +37,7 @@ const addGizmo = async (req: Request, res: Response): Promise<void> => {
       answers: body.answers,
     });
 
-    const addedGizmo: IGizmo = await gizmo.save();
+    const addedGizmo = await gizmo.save();
 
     res.status(201).json({ message: "Gizmo added", gizmo: addedGizmo });
   } catch (error) {
@@ -52,11 +52,11 @@ const updateGizmo = async (req: Request, res: Response): Promise<void> => {
   >;
   try {
     await Gizmo.findOneAndUpdate(
-      { resource: parseInt(req.params.resource) },
+      { resource: Number(req.params.resource) },
       body
     );
     const updatedGizmo = await Gizmo.findOne({
-      resource: parseInt(req.params.resource),
+      resource: Number(req.params.resource),
     });
     res.status(200).json({
       message: "Gizmo updated",
@@ -69,8 +69,8 @@ const updateGizmo = async (req: Request, res: Response): Promise<void> => {
 
 const deleteGizmo = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedGizmo: IGizmo | null = await Gizmo.findOneAndDelete({
-      resource: parseInt(req.params.resource),
+    const deletedGizmo = await Gizmo.findOneAndDelete({
+      resource: Number(req.params.resource),
     });
     res.status(200).json({
       message: "Gizmo deleted",

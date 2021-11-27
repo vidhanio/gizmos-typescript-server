@@ -7,7 +7,7 @@ import {
   deleteGizmo,
 } from "../controllers/gizmos";
 
-const router: Router = Router();
+const router = Router();
 
 router.get("/gizmos", getGizmos);
 router.get("/gizmo/:resource", getGizmo);

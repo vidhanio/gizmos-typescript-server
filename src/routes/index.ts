@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   getGizmos,
   getGizmo,
-  addGizmo,
-  updateGizmo,
+  createGizmo,
+  editGizmo,
   deleteGizmo,
 } from "../controllers/gizmos";
 
@@ -11,8 +11,8 @@ const router = Router();
 
 router.get("/gizmos", getGizmos);
 router.get("/gizmo/:resource", getGizmo);
-router.post("/add-gizmo", addGizmo);
-router.put("/edit-gizmo/:resource", updateGizmo);
+router.post("/create-gizmo", createGizmo);
+router.put("/edit-gizmo/:resource", editGizmo);
 router.delete("/delete-gizmo/:resource", deleteGizmo);
 
 export default router;

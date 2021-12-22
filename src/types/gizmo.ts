@@ -1,6 +1,4 @@
-import { Document } from "mongoose";
-
-export interface IGizmo extends Document {
+export interface IGizmo {
   title: string;
   materials: string;
   description: string;

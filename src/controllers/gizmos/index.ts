@@ -2,83 +2,190 @@ import { Response, Request } from "express";
 import { IGizmo } from "../../types/gizmo";
 import Gizmo from "../../models/gizmo";
 
-const getGizmos = async (req: Request, res: Response): Promise<void> => {
+async function getGizmos(req: Request, res: Response): Promise<void> {
   try {
-    const gizmos = await Gizmo.find();
+    const gizmos = await Gizmo.find().sort({ resource: 1 });
+
     res.status(200).json({ gizmos });
   } catch (error) {
-    res.sendStatus(404);
+    console.error(error);
+    res.sendStatus(500);
+    return;
   }
-};
+}
 
-const getGizmo = async (req: Request, res: Response): Promise<void> => {
+async function getGizmo(req: Request, res: Response): Promise<void> {
   try {
+    if (isNaN(Number(req.params.resource))) {
+      res.sendStatus(400);
+      return;
+    }
+
     const gizmo = await Gizmo.findOne({
       resource: Number(req.params.resource),
     });
-    res.status(200).json({ gizmo });
+
+    if (gizmo === null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.status(200).json({
+      gizmo: {
+        title: gizmo.title,
+        materials: gizmo.materials,
+        description: gizmo.description,
+        resource: gizmo.resource,
+        answers: gizmo.answers,
+      },
+    });
   } catch (error) {
-    res.sendStatus(404);
+    console.error(error);
+    res.sendStatus(500);
+    return;
   }
-};
+}
 
-const addGizmo = async (req: Request, res: Response): Promise<void> => {
+async function createGizmo(req: Request, res: Response): Promise<void> {
   try {
-    const body = req.body as Pick<
-      IGizmo,
-      "title" | "materials" | "description" | "resource" | "answers"
-    >;
+    const body = req.body as IGizmo;
 
-    const gizmo = new Gizmo({
-      name: body.title,
+    const addedGizmo = new Gizmo({
+      title: body.title,
       materials: body.materials,
       description: body.description,
       resource: body.resource,
       answers: body.answers,
     });
 
-    const addedGizmo = await gizmo.save();
+    if ((await Gizmo.findOne({ resource: addedGizmo.resource })) !== null) {
+      res.sendStatus(409);
+      return;
+    }
 
-    res.status(201).json({ message: "Gizmo added", gizmo: addedGizmo });
+    delete addedGizmo._id;
+    delete addedGizmo.__v;
+
+    addedGizmo.save((err) => {
+      if (err) {
+        res.sendStatus(400);
+        return;
+      } else {
+        res.status(201).json({
+          message: "Gizmo Added",
+          gizmo: {
+            title: addedGizmo.title,
+            materials: addedGizmo.materials,
+            description: addedGizmo.description,
+            resource: addedGizmo.resource,
+            answers: addedGizmo.answers,
+          },
+        });
+        return;
+      }
+    });
   } catch (error) {
-    res.sendStatus(404);
+    console.error(error);
+    res.sendStatus(500);
+    return;
   }
-};
+}
 
-const updateGizmo = async (req: Request, res: Response): Promise<void> => {
-  const body = req.body as Pick<
-    IGizmo,
-    "title" | "materials" | "description" | "resource" | "answers"
-  >;
+async function editGizmo(req: Request, res: Response): Promise<void> {
   try {
-    await Gizmo.findOneAndUpdate(
+    if (isNaN(Number(req.params.resource))) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const body = req.body as IGizmo;
+
+    const gizmo = new Gizmo({
+      title: body.title,
+      materials: body.materials,
+      description: body.description,
+      resource: body.resource,
+      answers: body.answers,
+    });
+
+    const oldGizmo = await Gizmo.findOneAndUpdate(
       { resource: Number(req.params.resource) },
-      body
+      gizmo,
+      undefined,
+      (err) => {
+        if (err) {
+          res.sendStatus(400);
+          return;
+        }
+      }
     );
-    const updatedGizmo = await Gizmo.findOne({
-      resource: Number(req.params.resource),
-    });
+
+    if (oldGizmo === null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    const updatedGizmo = await Gizmo.findById(oldGizmo._id);
+
+    if (updatedGizmo === null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    delete updatedGizmo._id;
+    delete updatedGizmo.__v;
+
     res.status(200).json({
-      message: "Gizmo updated",
-      gizmo: updatedGizmo,
+      message: "Gizmo Updated",
+      gizmo: {
+        title: updatedGizmo.title,
+        materials: updatedGizmo.materials,
+        description: updatedGizmo.description,
+        resource: updatedGizmo.resource,
+        answers: updatedGizmo.answers,
+      },
     });
   } catch (error) {
-    res.sendStatus(404);
+    console.error(error);
+    res.sendStatus(500);
+    return;
   }
-};
+}
 
-const deleteGizmo = async (req: Request, res: Response): Promise<void> => {
+async function deleteGizmo(req: Request, res: Response): Promise<void> {
   try {
+    if (isNaN(Number(req.params.resource))) {
+      res.sendStatus(400);
+      return;
+    }
+
     const deletedGizmo = await Gizmo.findOneAndDelete({
       resource: Number(req.params.resource),
     });
+
+    if (deletedGizmo === null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    delete deletedGizmo._id;
+    delete deletedGizmo.__v;
+
     res.status(200).json({
-      message: "Gizmo deleted",
-      gizmo: deletedGizmo,
+      message: "Gizmo Deleted",
+      gizmo: {
+        title: deletedGizmo.title,
+        materials: deletedGizmo.materials,
+        description: deletedGizmo.description,
+        resource: deletedGizmo.resource,
+        answers: deletedGizmo.answers,
+      },
     });
   } catch (error) {
-    res.sendStatus(404);
+    console.error(error);
+    res.sendStatus(500);
+    return;
   }
-};
+}
 
-export { getGizmos, getGizmo, addGizmo, updateGizmo, deleteGizmo };
+export { getGizmos, getGizmo, createGizmo, editGizmo, deleteGizmo };

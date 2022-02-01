@@ -7,8 +7,10 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server/index.js",
-    "dev": "nodemon ./server/index.ts"
+    "start:mongodb": "node dist/cmd/server/mongodb/index.js",
+    "start:sql": "node dist/cmd/server/sql/index.js",
+    "dev:mongodb": "nodemon ./cmd/server/mongodb/index.ts",
+    "dev:sql": "nodemon ./cmd/server/sql/index.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -1,27 +1,41 @@
 import { Db, MongoClient } from "mongodb";
 
-import { Gizmo } from "../../types";
+import { Gizmo } from "../gizmo";
 
-const uri = "mongodb://localhost:27017/vidhan-db";
+export class GizmoDB {
+  db: Db;
 
-const client = new MongoClient(uri);
+  constructor(uri: string, dbName: string) {
+    const client = new MongoClient(uri);
+    client.connect();
+    this.db = client.db(dbName);
+  }
 
-var db: Db;
+  async getGizmos(): Promise<Gizmo[]> {
+    const gizmos = await this.db
+      .collection("gizmos")
+      .find()
+      .sort({ resource: 1 })
+      .toArray();
 
-async function main() {
-  db = (await client.connect()).db("vidhan-db");
-}
+    return gizmos.map((gizmo) => {
+      return {
+        title: gizmo.title,
+        materials: gizmo.materials,
+        description: gizmo.description,
+        resource: gizmo.resource,
+        answers: gizmo.answers,
+      };
+    });
+  }
 
-main();
+  async getGizmo(resource: number): Promise<Gizmo | null> {
+    const gizmo = await this.db.collection("gizmos").findOne({ resource });
 
-export async function getGizmosDB(): Promise<Gizmo[]> {
-  const gizmos = await db
-    .collection("gizmos")
-    .find()
-    .sort({ resource: 1 })
-    .toArray();
+    if (gizmo === null) {
+      return null;
+    }
 
-  return gizmos.map((gizmo) => {
     return {
       title: gizmo.title,
       materials: gizmo.materials,
@@ -29,47 +43,33 @@ export async function getGizmosDB(): Promise<Gizmo[]> {
       resource: gizmo.resource,
       answers: gizmo.answers,
     };
-  });
-}
-
-export async function getGizmoDB(resource: number): Promise<Gizmo> {
-  const gizmo = await db.collection("gizmos").findOne({ resource });
-
-  if (gizmo === null) {
-    throw new Error("Gizmo not found");
   }
 
-  return {
-    title: gizmo.title,
-    materials: gizmo.materials,
-    description: gizmo.description,
-    resource: gizmo.resource,
-    answers: gizmo.answers,
-  };
-}
+  async insertGizmo(gizmo: Gizmo): Promise<void> {
+    const addedGizmo = await this.db.collection("gizmos").insertOne(gizmo);
 
-export async function insertGizmoDB(gizmo: Gizmo): Promise<void> {
-  const addedGizmo = await db.collection("gizmos").insertOne(gizmo);
-
-  if (addedGizmo.acknowledged === false) {
-    throw new Error("Gizmo not added");
+    if (addedGizmo.acknowledged === false) {
+      throw new Error("Gizmo not added");
+    }
   }
-}
 
-export async function editGizmoDB(gizmo: Gizmo): Promise<void> {
-  const editedGizmo = await db
-    .collection("gizmos")
-    .updateOne({ resource: gizmo.resource }, { $set: gizmo });
+  async updateGizmo(resource: number, gizmo: Gizmo): Promise<void> {
+    const editedGizmo = await this.db
+      .collection("gizmos")
+      .updateOne({ resource: resource }, { $set: gizmo });
 
-  if (editedGizmo.modifiedCount === 0) {
-    throw new Error("Gizmo not edited");
+    if (editedGizmo.modifiedCount === 0) {
+      throw new Error("Gizmo not edited");
+    }
   }
-}
 
-export async function deleteGizmoDB(resource: number): Promise<void> {
-  const deletedGizmo = await db.collection("gizmos").deleteOne({ resource });
+  async deleteGizmo(resource: number): Promise<void> {
+    const deletedGizmo = await this.db
+      .collection("gizmos")
+      .deleteOne({ resource: resource });
 
-  if (deletedGizmo.deletedCount === 0) {
-    throw new Error("Gizmo not deleted");
+    if (deletedGizmo.deletedCount === 0) {
+      throw new Error("Gizmo not deleted");
+    }
   }
 }

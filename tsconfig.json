@@ -9,6 +9,6 @@
     "rootDir": ".",
     "outDir": "dist"
   },
-  "include": ["db/**/*", "server/**/*"],
+  "include": ["db/**/*", "server/**/*", "cmd/**/*"],
   "exclude": ["dist", "node_modules"]
 }

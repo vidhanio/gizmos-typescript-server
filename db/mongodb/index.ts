@@ -1,30 +1,20 @@
-import { Gizmo } from "../types";
-import { MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
+
+import { Gizmo } from "../../types";
 
 const uri = "mongodb://localhost:27017/vidhan-db";
 
 const client = new MongoClient(uri);
 
+var db: Db;
+
 async function main() {
-  try {
-    await client.connect();
-  } catch (error) {
-    console.error(error);
-  }
+  db = (await client.connect()).db("vidhan-db");
 }
 
 main();
 
 export async function getGizmosDB(): Promise<Gizmo[]> {
-  try {
-    await client.connect();
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-
-  const db = client.db("vidhan-db");
-
   const gizmos = await db
     .collection("gizmos")
     .find()
@@ -43,15 +33,6 @@ export async function getGizmosDB(): Promise<Gizmo[]> {
 }
 
 export async function getGizmoDB(resource: number): Promise<Gizmo> {
-  try {
-    await client.connect();
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-
-  const db = client.db("vidhan-db");
-
   const gizmo = await db.collection("gizmos").findOne({ resource });
 
   if (gizmo === null) {
@@ -68,8 +49,6 @@ export async function getGizmoDB(resource: number): Promise<Gizmo> {
 }
 
 export async function insertGizmoDB(gizmo: Gizmo): Promise<void> {
-  const db = client.db("vidhan-db");
-
   const addedGizmo = await db.collection("gizmos").insertOne(gizmo);
 
   if (addedGizmo.acknowledged === false) {
@@ -78,8 +57,6 @@ export async function insertGizmoDB(gizmo: Gizmo): Promise<void> {
 }
 
 export async function editGizmoDB(gizmo: Gizmo): Promise<void> {
-  const db = client.db("vidhan-db");
-
   const editedGizmo = await db
     .collection("gizmos")
     .updateOne({ resource: gizmo.resource }, { $set: gizmo });
@@ -90,8 +67,6 @@ export async function editGizmoDB(gizmo: Gizmo): Promise<void> {
 }
 
 export async function deleteGizmoDB(resource: number): Promise<void> {
-  const db = client.db("vidhan-db");
-
   const deletedGizmo = await db.collection("gizmos").deleteOne({ resource });
 
   if (deletedGizmo.deletedCount === 0) {

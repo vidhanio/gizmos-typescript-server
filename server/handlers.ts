@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { deleteGizmoDB, getGizmoDB, getGizmosDB, insertGizmoDB } from "../db";
+import {
+  deleteGizmoDB,
+  getGizmoDB,
+  getGizmosDB,
+  insertGizmoDB,
+} from "../db/sql";
 
 import { Gizmo } from "../types";
 

@@ -1,3 +1,4 @@
+import { Gizmo } from "../types";
 import { MongoClient } from "mongodb";
 
 const uri = "mongodb://localhost:27017/vidhan-db";
@@ -30,7 +31,6 @@ export async function getGizmosDB(): Promise<Gizmo[]> {
     .sort({ resource: 1 })
     .toArray();
 
-  // turn into gizmo type
   return gizmos.map((gizmo) => {
     return {
       title: gizmo.title,

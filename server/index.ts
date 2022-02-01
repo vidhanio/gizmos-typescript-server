@@ -14,6 +14,11 @@ async function main() {
 
   app.use(express.json());
   app.use(cors());
+  // logging middleware
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+  });
 
   app.get("/gizmos", getGizmos);
   app.get("/gizmos/:resource", getGizmo);
@@ -21,8 +26,8 @@ async function main() {
   app.put("/gizmos/:resource", editGizmo);
   app.delete("/gizmos/:resource", deleteGizmo);
 
-  app.listen(3000, () => {
-    console.log("Listening on port 3000");
+  app.listen(8000, () => {
+    console.log("Listening on port 8000");
   });
 }
 

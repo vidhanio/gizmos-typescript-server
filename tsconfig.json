@@ -6,9 +6,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "index.ts", "server", "db", "types.ts", "index.d.ts"],
   "exclude": ["src/types/*.ts", "node_modules"]
 }

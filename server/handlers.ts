@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
-import {
-  deleteGizmoDB,
-  getGizmoDB,
-  getGizmosDB,
-  insertGizmoDB,
-} from "../database";
+import { deleteGizmoDB, getGizmoDB, getGizmosDB, insertGizmoDB } from "../db";
+
+import { Gizmo } from "../types";
 
 export async function getGizmos(req: Request, res: Response): Promise<void> {
   try {
@@ -46,7 +43,7 @@ export async function getGizmo(req: Request, res: Response): Promise<void> {
 
 export async function createGizmo(req: Request, res: Response): Promise<void> {
   try {
-    const gizmo = req.body;
+    const gizmo = req.body as Gizmo;
 
     if (gizmo === undefined) {
       res.sendStatus(400);

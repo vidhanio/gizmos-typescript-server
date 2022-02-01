@@ -1,4 +1,4 @@
-type Gizmo = {
+export type Gizmo = {
   title: string;
   materials: string;
   description: string;

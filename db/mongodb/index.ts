@@ -3,12 +3,21 @@ import { Db, MongoClient } from "mongodb";
 import { Gizmo } from "../gizmo";
 
 export class GizmoDB {
+  client: MongoClient;
   db: Db;
 
   constructor(uri: string, dbName: string) {
     const client = new MongoClient(uri);
-    client.connect();
+    this.client = client;
     this.db = client.db(dbName);
+  }
+
+  async Start(): Promise<void> {
+    this.client = await this.client.connect();
+  }
+
+  async Stop(): Promise<void> {
+    await this.client.close();
   }
 
   async getGizmos(): Promise<Gizmo[]> {

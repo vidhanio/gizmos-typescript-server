@@ -1,13 +1,40 @@
 import { NewGizmoResponse, NewGizmosResponse } from "./response";
-import { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 
 import { GizmoDB } from "../db/database";
+import cors from "cors";
 
 export class GizmoServer {
   db: GizmoDB;
+  mux = express();
 
   constructor(db: GizmoDB) {
     this.db = db;
+
+    this.mux.use(express.json());
+    this.mux.use(cors());
+    this.mux.use((req, res, next) => {
+      console.log(`${req.method} ${req.url}`);
+      next();
+    });
+
+    this.mux.get("/gizmos", this.getGizmos.bind(this));
+    this.mux.get("/gizmos/:resource", this.getGizmo.bind(this));
+    this.mux.post("/gizmos", this.postGizmo.bind(this));
+    this.mux.put("/gizmos/:resource", this.putGizmo.bind(this));
+    this.mux.delete("/gizmos/:resource", this.deleteGizmo.bind(this));
+  }
+
+  async Start(): Promise<void> {
+    await this.db.Start();
+
+    this.mux.listen(8000, () => {
+      console.log("Listening on port 8000");
+    });
+  }
+
+  async Stop(): Promise<void> {
+    await this.db.Stop();
   }
 
   async getGizmos(req: Request, res: Response): Promise<void> {

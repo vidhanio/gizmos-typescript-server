@@ -9,6 +9,26 @@ export class GizmoDB {
     this.pool = new Pool(config);
   }
 
+  async Start(): Promise<void> {
+    try {
+      await this.pool.query(
+        "CREATE TABLE IF NOT EXISTS gizmos (title TEXT, materials TEXT, description TEXT, resource INTEGER, answers TEXT[])"
+      );
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async Stop(): Promise<void> {
+    try {
+      await this.pool.end();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async getGizmos(): Promise<Gizmo[]> {
     try {
       const client = await this.pool.connect();

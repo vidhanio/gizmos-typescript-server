@@ -1,3 +1,4 @@
+import { NewGizmoResponse, NewGizmosResponse } from "./response";
 import { Request, Response } from "express";
 
 import { GizmoDB } from "../db/database";
@@ -12,80 +13,55 @@ export class GizmoServer {
   async getGizmos(req: Request, res: Response): Promise<void> {
     try {
       const gizmos = await this.db.getGizmos();
-      res.json({
-        message: "Success",
-        gizmos,
-      });
+
+      res.json(NewGizmosResponse("Gizmos retrieved.", gizmos));
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Internal server error",
-        gizmos: [],
-      });
+      res.sendStatus(500);
     }
   }
 
   async getGizmo(req: Request, res: Response): Promise<void> {
     try {
       const gizmo = await this.db.getGizmo(Number(req.params.resource));
-      res.json({
-        message: "Success",
-        gizmo,
-      });
+
+      res.json(NewGizmoResponse("Gizmo retrieved.", gizmo));
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Internal server error",
-        gizmo: null,
-      });
+      res.sendStatus(500);
     }
   }
 
-  async createGizmo(req: Request, res: Response): Promise<void> {
+  async postGizmo(req: Request, res: Response): Promise<void> {
     try {
       await this.db.insertGizmo(req.body);
-      res.json({
-        message: "Success",
-        gizmo: null,
-      });
+
+      res.json(NewGizmoResponse("Gizmo created.", null));
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Internal server error",
-        gizmo: null,
-      });
+      res.sendStatus(500);
     }
   }
 
-  async editGizmo(req: Request, res: Response): Promise<void> {
+  async putGizmo(req: Request, res: Response): Promise<void> {
     try {
       await this.db.updateGizmo(Number(req.params.resource), req.body);
-      res.json({
-        message: "Success",
-        gizmo: null,
-      });
+
+      res.json(NewGizmoResponse("Gizmo updated.", null));
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Internal server error",
-        gizmo: null,
-      });
+      res.sendStatus(500);
     }
   }
 
   async deleteGizmo(req: Request, res: Response): Promise<void> {
     try {
       await this.db.deleteGizmo(Number(req.params.resource));
-      res.json({
-        message: "Success",
-        gizmo: null,
-      });
+
+      res.json(NewGizmoResponse("Gizmo deleted.", null));
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Internal server error",
-        gizmo: null,
-      });
+      res.sendStatus(500);
     }
   }
 }

@@ -1,11 +1,31 @@
 import { Gizmo } from "../db/gizmo";
 
 export type GizmoResponse = {
-  Message: string;
-  Gizmo: Gizmo | null;
+  message: string;
+  gizmo: Gizmo | null;
 };
 
 export type GizmosResponse = {
-  Message: string;
-  Gizmos: Gizmo[];
+  message: string;
+  gizmos: Gizmo[];
 };
+
+export function NewGizmoResponse(
+  message: string,
+  gizmo: Gizmo | null
+): GizmoResponse {
+  return {
+    message,
+    gizmo,
+  };
+}
+
+export function NewGizmosResponse(
+  message: string,
+  gizmos: Gizmo[]
+): GizmosResponse {
+  return {
+    message,
+    gizmos,
+  };
+}

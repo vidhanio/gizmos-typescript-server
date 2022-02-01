@@ -19,8 +19,8 @@ async function main() {
 
   app.get("/gizmos", server.getGizmos.bind(server));
   app.get("/gizmos/:resource", server.getGizmo.bind(server));
-  app.post("/gizmos", server.createGizmo.bind(server));
-  app.put("/gizmos/:resource", server.editGizmo.bind(server));
+  app.post("/gizmos", server.postGizmo.bind(server));
+  app.put("/gizmos/:resource", server.putGizmo.bind(server));
   app.delete("/gizmos/:resource", server.deleteGizmo.bind(server));
 
   app.listen(8000, () => {

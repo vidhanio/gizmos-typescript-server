@@ -1,7 +1,7 @@
-export interface IGizmo {
+type Gizmo = {
   title: string;
   materials: string;
   description: string;
   resource: number;
   answers: string[];
-}
+};

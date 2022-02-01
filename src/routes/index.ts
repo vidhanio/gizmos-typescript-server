@@ -1,18 +1,22 @@
-import { Router } from "express";
 import {
-  getGizmos,
-  getGizmo,
   createGizmo,
-  editGizmo,
   deleteGizmo,
+  editGizmo,
+  getGizmo,
+  getGizmos,
 } from "../controllers/gizmos";
+
+import { Router } from "express";
+import cors from "cors";
 
 const router = Router();
 
+router.use(cors());
+
 router.get("/gizmos", getGizmos);
-router.get("/gizmo/:resource", getGizmo);
-router.post("/create-gizmo", createGizmo);
-router.put("/edit-gizmo/:resource", editGizmo);
-router.delete("/delete-gizmo/:resource", deleteGizmo);
+router.get("/gizmos/:resource", getGizmo);
+router.post("/gizmos", createGizmo);
+router.put("/gizmos/:resource", editGizmo);
+router.delete("/gizmos/:resource", deleteGizmo);
 
 export default router;

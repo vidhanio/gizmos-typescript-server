@@ -1,6 +1,7 @@
-import { Response, Request } from "express";
-import { IGizmo } from "../../types/gizmo";
+import { Request, Response } from "express";
+
 import Gizmo from "../../models/gizmo";
+import { IGizmo } from "../../types/gizmo";
 
 async function getGizmos(req: Request, res: Response): Promise<void> {
   try {
@@ -131,9 +132,6 @@ async function editGizmo(req: Request, res: Response): Promise<void> {
       res.sendStatus(404);
       return;
     }
-
-    delete updatedGizmo._id;
-    delete updatedGizmo.__v;
 
     res.status(200).json({
       message: "Gizmo Updated",
